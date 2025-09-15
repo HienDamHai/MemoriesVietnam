@@ -1,0 +1,15 @@
+C:\FPTU\FA25\EXE\MemoriesVietnam\MemoriesVietnam.Application\bin\Debug\net8.0\MemoriesVietnam.Application.deps.json
+C:\FPTU\FA25\EXE\MemoriesVietnam\MemoriesVietnam.Application\bin\Debug\net8.0\MemoriesVietnam.Application.dll
+C:\FPTU\FA25\EXE\MemoriesVietnam\MemoriesVietnam.Application\bin\Debug\net8.0\MemoriesVietnam.Application.pdb
+C:\FPTU\FA25\EXE\MemoriesVietnam\MemoriesVietnam.Application\bin\Debug\net8.0\MemoriesVietnam.Domain.dll
+C:\FPTU\FA25\EXE\MemoriesVietnam\MemoriesVietnam.Application\bin\Debug\net8.0\MemoriesVietnam.Domain.pdb
+C:\FPTU\FA25\EXE\MemoriesVietnam\MemoriesVietnam.Application\obj\Debug\net8.0\MemoriesVietnam.Application.csproj.AssemblyReference.cache
+C:\FPTU\FA25\EXE\MemoriesVietnam\MemoriesVietnam.Application\obj\Debug\net8.0\MemoriesVietnam.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\FPTU\FA25\EXE\MemoriesVietnam\MemoriesVietnam.Application\obj\Debug\net8.0\MemoriesVietnam.Application.AssemblyInfoInputs.cache
+C:\FPTU\FA25\EXE\MemoriesVietnam\MemoriesVietnam.Application\obj\Debug\net8.0\MemoriesVietnam.Application.AssemblyInfo.cs
+C:\FPTU\FA25\EXE\MemoriesVietnam\MemoriesVietnam.Application\obj\Debug\net8.0\MemoriesVietnam.Application.csproj.CoreCompileInputs.cache
+C:\FPTU\FA25\EXE\MemoriesVietnam\MemoriesVietnam.Application\obj\Debug\net8.0\Memories.DA32C6C9.Up2Date
+C:\FPTU\FA25\EXE\MemoriesVietnam\MemoriesVietnam.Application\obj\Debug\net8.0\MemoriesVietnam.Application.dll
+C:\FPTU\FA25\EXE\MemoriesVietnam\MemoriesVietnam.Application\obj\Debug\net8.0\refint\MemoriesVietnam.Application.dll
+C:\FPTU\FA25\EXE\MemoriesVietnam\MemoriesVietnam.Application\obj\Debug\net8.0\MemoriesVietnam.Application.pdb
+C:\FPTU\FA25\EXE\MemoriesVietnam\MemoriesVietnam.Application\obj\Debug\net8.0\ref\MemoriesVietnam.Application.dll
