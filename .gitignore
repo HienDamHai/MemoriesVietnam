@@ -1,0 +1,22 @@
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio cache
+.vs/
+
+# Build logs
+*.log
+
+# Environment configs
+appsettings.Development.json
+
+# Others
+*.db
+*.DS_Store
