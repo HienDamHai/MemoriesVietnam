@@ -1,10 +1,12 @@
 ﻿using MemoriesVietnam.Application.DTOs;
 using MemoriesVietnam.Application.Interfaces;
 using MemoriesVietnam.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MemoriesVietnam.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase

@@ -26,7 +26,7 @@ namespace MemoriesVietnam.Infrastructure.Repositories
 
         public async Task<Login> GetByEmailAsync(string email)
         {
-            return await _context.Logins.FirstOrDefaultAsync(l => l.Email == email);
+            return await _context.Logins.Include(l => l.Users).FirstOrDefaultAsync(l => l.Email == email);
         }
     }
 }

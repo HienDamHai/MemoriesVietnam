@@ -85,8 +85,11 @@ namespace MemoriesVietnam.Application.Services
 
         private string GenerateJwtToken(Login login)
         {
-            var claims = new[]
+            var userId = login.Users.FirstOrDefault().Id;
+
+            var claims = new List<Claim>
             {
+                new Claim("userId", userId),
                 new Claim(JwtRegisteredClaimNames.Sub, login.Id),
                 new Claim(ClaimTypes.Email, login.Email ?? ""),
                 new Claim(ClaimTypes.Role, login.Role.ToString())
