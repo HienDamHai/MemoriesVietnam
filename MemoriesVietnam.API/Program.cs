@@ -45,7 +45,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
-
+builder.Services.AddScoped<IOAuthAccountRepository, OAuthAccountRepository>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

@@ -1,4 +1,5 @@
-﻿using MemoriesVietnam.Application.DTOs.Auth;
+﻿using MemoriesVietnam.Application.DTOs;
+using MemoriesVietnam.Application.DTOs.Auth;
 using MemoriesVietnam.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,6 +35,20 @@ namespace MemoriesVietnam.API.Controllers
             try
             {
                 var response = await _authService.LoginAsync(request);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("oauth-login")]
+        public async Task<IActionResult> OAuthLogin([FromBody] OAuthAccountDto.OAuthLoginRequest request)
+        {
+            try
+            {
+                var response = await _authService.OAuthLoginAsync(request);
                 return Ok(response);
             }
             catch (Exception ex)
