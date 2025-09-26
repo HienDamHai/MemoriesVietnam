@@ -46,6 +46,16 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IOAuthAccountRepository, OAuthAccountRepository>();
+builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<TagService>();
+builder.Services.AddScoped<OrderService>();
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.WriteIndented = true;
+    });
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
