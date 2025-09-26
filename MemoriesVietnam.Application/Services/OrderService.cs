@@ -1,6 +1,7 @@
 ﻿using MemoriesVietnam.Domain.Entities;
 using MemoriesVietnam.Domain.Enum;
 using MemoriesVietnam.Domain.IBasic;
+using MemoriesVietnam.Domain.IRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,11 @@ namespace MemoriesVietnam.Application.Services
     public class OrderService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public OrderService(IUnitOfWork unitOfWork)
+        private readonly IOrderRepository _orderRepository;
+        public OrderService(IUnitOfWork unitOfWork, IOrderRepository orderRepository)
         {
             _unitOfWork = unitOfWork;
+            _orderRepository = orderRepository;
         }
 
         public async Task<IEnumerable<Order>> GetAllAsync()
@@ -29,7 +32,25 @@ namespace MemoriesVietnam.Application.Services
 
         public async Task<Order> CreateAsync(Order order)
         {
-            order.Total = order.OrderItems?.Sum(i => i.Price * i.Qty) ?? 0;
+            decimal total = 0;
+
+            foreach (var item in order.OrderItems)
+            {
+                var product = await _unitOfWork.Repository<Product>().GetByIdAsync(item.ProductId);
+
+                if (product.Stock < item.Qty)
+                {
+                    throw new Exception($"Not enough stock for product {product.Name}");
+                }
+
+                item.Price = product.Price;
+                total += item.Price * item.Qty;
+
+                product.Stock -= item.Qty;
+                _unitOfWork.Repository<Product>().Update(product);
+            }
+
+            order.Total = total;
             order.Status = OrderStatus.Pending;
 
             await _unitOfWork.Repository<Order>().AddAsync(order);
@@ -58,6 +79,18 @@ namespace MemoriesVietnam.Application.Services
             _unitOfWork.Repository<Order>().Remove(order);
             await _unitOfWork.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(string userId)
+        {
+            if(string.IsNullOrEmpty(userId))
+            {
+                throw new ArgumentException("User ID cannot be null or empty", nameof(userId));
+            }
+
+            var orders = await _orderRepository.GetOrdersByUserIdAsync(userId);
+
+            return orders;
         }
     }
 }

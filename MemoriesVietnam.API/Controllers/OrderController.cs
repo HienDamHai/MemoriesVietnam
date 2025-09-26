@@ -31,6 +31,22 @@ namespace MemoriesVietnam.API.Controllers
         {
             var order = await _orderService.GetByIdAsync(id);
             if (order == null) return NotFound();
+
+            var dto = new OrderDto
+            {
+                Id = order.Id,
+                UserId = order.UserId,
+                Total = order.Total,
+                Payment = order.Payment,
+                Status = order.Status.ToString(),
+                CreatedAt = order.CreatedAt,
+                Items = order.OrderItems.Select(i => new OrderItemDto
+                {
+                    ProductId = i.ProductId,
+                    Qty = i.Qty,
+                    Price = i.Price
+                }).ToList() ?? new List<OrderItemDto>()
+            };
             return Ok(order);
         }
 
@@ -74,6 +90,15 @@ namespace MemoriesVietnam.API.Controllers
             var deleted = await _orderService.DeleteAsync(id);
             if (!deleted) return NotFound();
             return NoContent();
+        }
+
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetByUserId(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+                return BadRequest("User ID cannot be null or empty");
+            var orders = await _orderService.GetOrdersByUserIdAsync(userId);
+            return Ok(orders);
         }
     }
 }
