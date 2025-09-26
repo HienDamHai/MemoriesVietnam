@@ -50,6 +50,8 @@ builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<TagService>();
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<PodcastService>();
+builder.Services.AddScoped<PodcastEpisodeService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
