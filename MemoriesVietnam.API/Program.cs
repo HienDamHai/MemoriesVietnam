@@ -56,6 +56,8 @@ builder.Services.AddScoped<IBookmarksRepository, BookmarkRepository>();
 builder.Services.AddScoped<BookmarkService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<IEraRepository, EraRepository>();
+builder.Services.AddScoped<EraService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
