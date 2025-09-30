@@ -52,6 +52,10 @@ builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<PodcastService>();
 builder.Services.AddScoped<PodcastEpisodeService>();
+builder.Services.AddScoped<IBookmarksRepository, BookmarkRepository>();
+builder.Services.AddScoped<BookmarkService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<CategoryService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
