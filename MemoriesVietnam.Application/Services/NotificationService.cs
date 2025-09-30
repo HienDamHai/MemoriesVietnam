@@ -72,5 +72,45 @@ namespace MemoriesVietnam.Application.Services
             await _unitOfWork.SaveChangesAsync();
             return true;
         }
+
+        public async Task<bool> MarkAllAsReadAsync(string userId)
+        {
+            var notifications = await _notificationRepository.GetUserNotificationsAsync(userId, includeRead: false);
+            if (notifications == null || !notifications.Any()) return false;
+
+            foreach (var notif in notifications)
+            {
+                notif.IsRead = true;
+                _notificationRepository.Update(notif);
+            }
+
+            await _unitOfWork.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteNotificationAsync(string userId, string notificationId)
+        {
+            var notif = await _notificationRepository.GetByIdAsync(notificationId);
+            if (notif == null || notif.UserId != userId) return false;
+
+            _notificationRepository.Remove(notif);
+            await _unitOfWork.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> ClearAllAsync(string userId)
+        {
+            var notifications = await _notificationRepository.GetUserNotificationsAsync(userId);
+            if (notifications == null || !notifications.Any()) return false;
+
+            foreach (var notif in notifications)
+            {
+                _notificationRepository.Remove(notif);
+            }
+
+            await _unitOfWork.SaveChangesAsync();
+            return true;
+        }
+
     }
 }

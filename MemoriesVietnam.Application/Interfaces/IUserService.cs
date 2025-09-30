@@ -15,5 +15,6 @@ namespace MemoriesVietnam.Application.Interfaces
         Task<UserDto> CreateAsync(CreateUserRequest request);
         Task<bool> UpdateAsync(string id, UpdateUserRequest request);
         Task<bool> DeleteAsync(string id);
+        Task<bool> ChangePasswordAsync(string userId, string currentPassword, string newPassword);
     }
 }

@@ -47,17 +47,36 @@ namespace MemoriesVietnam.API.Controllers
                     Price = i.Price
                 }).ToList() ?? new List<OrderItemDto>()
             };
-            return Ok(order);
+            return Ok(dto);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateOrderDto dto)
         {
+            var userId = GetUserId();
+            if (userId == null) return Unauthorized();
             var order = new Order
             {
-                UserId = dto.UserId,
+                UserId = userId,
                 Payment = dto.Payment,
                 OrderItems = dto.Items.Select(i => new OrderItem
+                {
+                    ProductId = i.ProductId,
+                    Qty = i.Qty
+                }).ToList()
+            };
+
+            var created = await _orderService.CreateAsync(order);
+
+            var result = new OrderDto
+            {
+                Id = created.Id,
+                UserId = created.UserId,
+                Total = created.Total,
+                Payment = created.Payment,
+                Status = created.Status.ToString(),
+                CreatedAt = created.CreatedAt,
+                Items = created.OrderItems.Select(i => new OrderItemDto
                 {
                     ProductId = i.ProductId,
                     Qty = i.Qty,
@@ -65,9 +84,7 @@ namespace MemoriesVietnam.API.Controllers
                 }).ToList()
             };
 
-            var created = await _orderService.CreateAsync(order);
-
-            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+            return CreatedAtAction(nameof(GetMyOrderById), new { id = result.Id }, result);
         }
 
         [HttpPut("status/{id}")]
@@ -99,6 +116,67 @@ namespace MemoriesVietnam.API.Controllers
                 return BadRequest("User ID cannot be null or empty");
             var orders = await _orderService.GetOrdersByUserIdAsync(userId);
             return Ok(orders);
+        }
+
+        [HttpGet("me")]
+        public async Task<IActionResult> GetMyOrder()
+        {
+            var userId = GetUserId();
+
+            if (userId == null) return Unauthorized();
+
+            var orders = await _orderService.GetOrdersByUserIdAsync(userId);
+            var dtos = orders.Select(o => new OrderDto
+            {
+                Id = o.Id,
+                UserId = userId,
+                Total = o.Total,
+                Payment = o.Payment,
+                Status = o.Status.ToString(),
+                CreatedAt = o.CreatedAt,
+                Items = o.OrderItems.Select(i => new OrderItemDto
+                {
+                    ProductId = i.ProductId,
+                    Qty = i.Qty,
+                    Price = i.Price
+                }).ToList()
+            });
+
+            return Ok(orders);
+        }
+
+        [HttpGet("me/{id}")]
+        public async Task<IActionResult> GetMyOrderById(string id)
+        {
+            var userId = GetUserId();
+            if (userId == null) return Unauthorized();
+
+            var order = await _orderService.GetByIdAsync(id);
+            if (order == null || order.UserId != userId) return NotFound();
+
+            var dto = new OrderDto
+            {
+                Id = order.Id,
+                UserId = userId,
+                Total = order.Total,
+                Payment = order.Payment,
+                Status = order.Status.ToString(),
+                CreatedAt = order.CreatedAt,
+                Items = order.OrderItems.Select(i => new OrderItemDto
+                {
+                    ProductId = i.ProductId,
+                    Qty = i.Qty,
+                    Price = i.Price
+                }).ToList()
+            };
+            return Ok(dto);
+        }
+
+
+        
+        private string GetUserId()
+        {
+            return User.FindFirst("userId")?.Value ?? "";
         }
     }
 }

@@ -14,6 +14,8 @@ namespace MemoriesVietnam.Application.Interfaces
         Task<int> CountUnreadAsync(string userId);
         Task<Notification> CreateNotificationAsync(NotifDto.NotificationCreateRequest request);
         Task<bool> MarkAsReadAsync(string notificationId);
-        Task<bool> DeleteNotificationAsync(string notificationId);
+        Task<bool> MarkAllAsReadAsync(string userId);
+        Task<bool> DeleteNotificationAsync(string userId, string notificationId);
+        Task<bool> ClearAllAsync(string userId);
     }
 }

@@ -58,5 +58,41 @@ namespace MemoriesVietnam.API.Controllers
             var result = await _userService.DeleteAsync(id);
             return result ? NoContent() : NotFound();
         }
+
+        [HttpGet("me")]
+        public async Task<IActionResult> GetMe()
+        {
+            var userId = GetUserId();
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            var user = await _userService.GetByIdWithLoginAsync(userId);
+            return user == null ? NotFound() : Ok(user);
+        }
+
+        [HttpPut("me")]
+        public async Task<IActionResult> UpdateMe([FromBody] UpdateUserRequest request)
+        {
+            var userId = GetUserId();
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            var result = await _userService.UpdateAsync(userId, request);
+            return result ? NoContent() : NotFound();
+        }
+
+        [HttpPut("me/password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            var userId = GetUserId();
+            if (!string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            var result = await _userService.ChangePasswordAsync(userId, request.CurrentPassword, request.NewPassword);
+            return result ? NoContent() : BadRequest("Invalid current password");
+        }
+
+
+        private string GetUserId()
+        {
+            return User.FindFirst("userId")?.Value ?? "";
+        }
     }
 }

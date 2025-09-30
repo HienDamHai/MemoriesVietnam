@@ -56,5 +56,11 @@ namespace MemoriesVietnam.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            return Ok(new { message = "Logged out" });
+        }
     }
 }

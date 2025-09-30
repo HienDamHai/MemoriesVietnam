@@ -119,5 +119,22 @@ namespace MemoriesVietnam.Application.Services
             await _unitOfWork.SaveChangesAsync();
             return true;
         }
+
+        public async Task<bool> ChangePasswordAsync(string userId, string currentPassword, string newPassword)
+        {
+            var user = await _userRepository.GetByIdWithLoginAsync(userId);
+            if (user == null || user.Login == null) return false;
+
+            if (!BCrypt.Net.BCrypt.Verify(currentPassword, user.Login.PasswordHash))
+                return false;
+
+            user.Login.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+            user.UpdatedAt = DateTime.Now;
+
+            _userRepository.Update(user);
+            await _unitOfWork.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

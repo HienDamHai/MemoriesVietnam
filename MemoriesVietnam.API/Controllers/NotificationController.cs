@@ -81,5 +81,38 @@ namespace MemoriesVietnam.API.Controllers
             if (!success) return NotFound();
             return NoContent();
         }
+
+        [HttpPost("read-all")]
+        public async Task<IActionResult> MarkAllRead()
+        {
+            var userId = User.FindFirst("userId")?.Value;
+            if (userId == null) return Unauthorized();
+
+            var success = await _notificationService.MarkAllAsReadAsync(userId);
+            if (!success) return BadRequest();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var userId = User.FindFirst("userId")?.Value;
+            if (userId == null) return Unauthorized();
+
+            var success = await _notificationService.DeleteNotificationAsync(userId, id);
+            if (!success) return NotFound();
+            return NoContent();
+        }
+
+        [HttpDelete("clear")]
+        public async Task<IActionResult> ClearAll()
+        {
+            var userId = User.FindFirst("userId")?.Value;
+            if (userId == null) return Unauthorized();
+
+            await _notificationService.ClearAllAsync(userId);
+            return NoContent();
+        }
     }
 }

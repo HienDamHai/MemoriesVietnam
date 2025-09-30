@@ -31,4 +31,10 @@ namespace MemoriesVietnam.Application.DTOs
         public string Phone { get; set; } = "";
         public string Address { get; set; } = "";
     }
+
+    public class ChangePasswordRequest
+    {
+        public string CurrentPassword { get; set; } = "";
+        public string NewPassword { get; set; } = "";
+    }
 }
