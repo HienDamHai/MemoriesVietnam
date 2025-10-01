@@ -68,6 +68,8 @@ builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<CommentService>();
 builder.Services.AddScoped<IHistoryLogRepository, HistoryLogRepository>();
 builder.Services.AddScoped<HistoryLogService>();
+builder.Services.AddScoped<ILikeTableRepository, LikeTableRepository>();
+builder.Services.AddScoped<LikeTableService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
