@@ -64,6 +64,10 @@ builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
 builder.Services.AddScoped<ArticleService>();
 builder.Services.AddScoped<IArticleTagRepository, ArticleTagRepository>();
 builder.Services.AddScoped<ArticleTagService>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<CommentService>();
+builder.Services.AddScoped<IHistoryLogRepository, HistoryLogRepository>();
+builder.Services.AddScoped<HistoryLogService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
