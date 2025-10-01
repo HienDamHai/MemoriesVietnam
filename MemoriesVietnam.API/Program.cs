@@ -62,6 +62,8 @@ builder.Services.AddScoped<IArticleAudioRepository, ArticleAudioRepository>();
 builder.Services.AddScoped<ArticleAudioService>();
 builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
 builder.Services.AddScoped<ArticleService>();
+builder.Services.AddScoped<IArticleTagRepository, ArticleTagRepository>();
+builder.Services.AddScoped<ArticleTagService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

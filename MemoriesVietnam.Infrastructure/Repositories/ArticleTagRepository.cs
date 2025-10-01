@@ -1,5 +1,6 @@
 ﻿using MemoriesVietnam.Domain.Entities;
 using MemoriesVietnam.Domain.IRepositories;
+using MemoriesVietnam.Infrastructure.Basic;
 using MemoriesVietnam.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,20 +11,17 @@ using System.Threading.Tasks;
 
 namespace MemoriesVietnam.Infrastructure.Repositories
 {
-    public class ArticleTagRepository : IArticleTagRepository
+    public class ArticleTagRepository : GenericRepository<ArticleTag>, IArticleTagRepository
     {
         private readonly AppDbContext _context;
 
-        public ArticleTagRepository(AppDbContext context)
+        public ArticleTagRepository(AppDbContext context) : base(context)
         {
             _context = context;
         }
 
         public async Task<IEnumerable<ArticleTag>> GetByArticleIdAsync(string articleId)
         {
-            if (string.IsNullOrEmpty(articleId))
-                throw new ArgumentException("Article ID cannot be null or empty", nameof(articleId));
-
             return await _context.ArticleTags
                 .Where(at => at.ArticleId == articleId && !at.IsDeleted)
                 .Include(at => at.Tag)
@@ -32,9 +30,6 @@ namespace MemoriesVietnam.Infrastructure.Repositories
 
         public async Task<IEnumerable<ArticleTag>> GetByTagIdAsync(string tagId)
         {
-            if (string.IsNullOrEmpty(tagId))
-                throw new ArgumentException("Tag ID cannot be null or empty", nameof(tagId));
-
             return await _context.ArticleTags
                 .Where(at => at.TagId == tagId && !at.IsDeleted)
                 .Include(at => at.Article)
