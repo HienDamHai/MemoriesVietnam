@@ -4,6 +4,7 @@ using MemoriesVietnam.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace MemoriesVietnam.API.Controllers
 {
@@ -18,6 +19,7 @@ namespace MemoriesVietnam.API.Controllers
             _productService = productService;
         }
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             var products = await _productService.GetAllAsync();
@@ -42,7 +44,7 @@ namespace MemoriesVietnam.API.Controllers
                 Description = product.Description,
                 Price = product.Price,
                 Stock = product.Stock,
-                Images = product.Images,
+                Images = JsonSerializer.Serialize(product.Images),
                 CategoryId = product.CategoryId
             };
             var created = await _productService.CreateAsync(item);
@@ -61,7 +63,7 @@ namespace MemoriesVietnam.API.Controllers
                 Description = product.Description,
                 Price = product.Price,
                 Stock = product.Stock,
-                Images = product.Images,
+                Images = JsonSerializer.Serialize(product.Images),
                 CategoryId = product.CategoryId
             };
             var updated = await _productService.UpdateAsync(item);

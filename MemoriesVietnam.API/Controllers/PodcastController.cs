@@ -19,6 +19,7 @@ namespace MemoriesVietnam.API.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             var podcasts = await _podcastService.GetAllAsync();
@@ -75,6 +76,14 @@ namespace MemoriesVietnam.API.Controllers
             if (!result)
                 return NotFound();
             return NoContent();
+        }
+
+        [HttpGet("with-episodes")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllWithEpisode()
+        {
+            var podcasts = await _podcastService.GetAllWithEpisodeAsync();
+            return Ok(podcasts);
         }
     }
 }

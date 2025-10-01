@@ -1,19 +1,24 @@
-﻿using MemoriesVietnam.Domain.Entities;
+﻿using MemoriesVietnam.Application.DTOs;
+using MemoriesVietnam.Domain.Entities;
 using MemoriesVietnam.Domain.IBasic;
+using MemoriesVietnam.Domain.IRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static MemoriesVietnam.Application.DTOs.PodcastDto.CreatePodcastDto;
 
 namespace MemoriesVietnam.Application.Services
 {
     public class PodcastService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public PodcastService(IUnitOfWork unitOfWork)
+        private readonly IPodcastRepository _podcastRepository;
+        public PodcastService(IUnitOfWork unitOfWork, IPodcastRepository podcastRepository)
         {
             _unitOfWork = unitOfWork;
+            _podcastRepository = podcastRepository;
         }
 
         public async Task<IEnumerable<Podcast>> GetAllAsync()
@@ -57,6 +62,13 @@ namespace MemoriesVietnam.Application.Services
             _unitOfWork.Repository<Podcast>().Remove(existingPodcast);
             await _unitOfWork.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<IEnumerable<Podcast>> GetAllWithEpisodeAsync()
+        {
+            var podcasts = await _podcastRepository.GetAllWithEpisodesAsync();
+
+            return podcasts;
         }
     }
 }

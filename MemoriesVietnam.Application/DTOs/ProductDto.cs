@@ -25,7 +25,7 @@ namespace MemoriesVietnam.Application.DTOs
         public string Description { get; set; } = "";
         public decimal Price { get; set; }
         public int Stock { get; set; } = 0;
-        public string? Images { get; set; }
+        public string[] Images { get; set; } = Array.Empty<string>();
         public string CategoryId { get; set; } = "";
     }
 

@@ -36,6 +36,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
@@ -50,6 +60,7 @@ builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<TagService>();
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IPodcastRepository, PodcastRepository>();
 builder.Services.AddScoped<PodcastService>();
 builder.Services.AddScoped<PodcastEpisodeService>();
 builder.Services.AddScoped<IBookmarksRepository, BookmarkRepository>();
@@ -134,6 +145,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowFrontend");
 
 app.UseHttpsRedirection();
 
