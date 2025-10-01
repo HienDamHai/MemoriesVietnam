@@ -63,6 +63,24 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IPodcastRepository, PodcastRepository>();
 builder.Services.AddScoped<PodcastService>();
 builder.Services.AddScoped<PodcastEpisodeService>();
+builder.Services.AddScoped<IBookmarksRepository, BookmarkRepository>();
+builder.Services.AddScoped<BookmarkService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<IEraRepository, EraRepository>();
+builder.Services.AddScoped<EraService>();
+builder.Services.AddScoped<IArticleAudioRepository, ArticleAudioRepository>();
+builder.Services.AddScoped<ArticleAudioService>();
+builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
+builder.Services.AddScoped<ArticleService>();
+builder.Services.AddScoped<IArticleTagRepository, ArticleTagRepository>();
+builder.Services.AddScoped<ArticleTagService>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<CommentService>();
+builder.Services.AddScoped<IHistoryLogRepository, HistoryLogRepository>();
+builder.Services.AddScoped<HistoryLogService>();
+builder.Services.AddScoped<ILikeTableRepository, LikeTableRepository>();
+builder.Services.AddScoped<LikeTableService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
