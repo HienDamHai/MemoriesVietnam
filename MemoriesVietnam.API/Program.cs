@@ -58,6 +58,10 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<IEraRepository, EraRepository>();
 builder.Services.AddScoped<EraService>();
+builder.Services.AddScoped<IArticleAudioRepository, ArticleAudioRepository>();
+builder.Services.AddScoped<ArticleAudioService>();
+builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
+builder.Services.AddScoped<ArticleService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
