@@ -83,10 +83,11 @@ namespace MemoriesVietnam.API.Controllers
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
         {
             var userId = GetUserId();
-            if (!string.IsNullOrEmpty(userId)) return Unauthorized();
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
             var result = await _userService.ChangePasswordAsync(userId, request.CurrentPassword, request.NewPassword);
-            return result ? NoContent() : BadRequest("Invalid current password");
+            return result ? Ok(new { message = "Password changed successfully" }) : 
+                BadRequest("Invalid current password");
         }
 
 
