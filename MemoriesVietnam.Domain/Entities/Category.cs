@@ -1,19 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MemoriesVietnam.Domain.Common;
+using System.ComponentModel.DataAnnotations;
 
-namespace MemoriesVietnam.Domain.Entities
+namespace MemoriesVietnam.Models.Entities
 {
-    public class Category : ISoftDeletable
+    public class Category
     {
+        [Key]
+        [StringLength(100)]
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string Name { get; set; } = "";
-        public bool IsDeleted { get; set; } = false;
-        public DateTime? DeletedAt { get; set; }
 
-        public ICollection<Product>? Products { get; set; }
+        [Required]
+        [StringLength(255)]
+        public string Name { get; set; } = string.Empty;
+
+        // Navigation properties
+        public virtual ICollection<Product> Products { get; set; } = new List<Product>();
     }
 }

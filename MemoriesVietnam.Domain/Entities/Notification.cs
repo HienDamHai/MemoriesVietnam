@@ -1,25 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MemoriesVietnam.Domain.Common;
-using MemoriesVietnam.Domain.Enum;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MemoriesVietnam.Domain.Entities
+namespace MemoriesVietnam.Models.Entities
 {
-    public class Notification : ISoftDeletable
+    public class Notification
     {
+        [Key]
+        [StringLength(100)]
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string UserId { get; set; }
-        public User User { get; set; }
-        public string Type { get; set; } = "";
-        public string Content { get; set; } = "";
+
+        [Required]
+        [StringLength(100)]
+        public string UserId { get; set; } = string.Empty;
+
+        [Required]
+        [StringLength(100)]
+        public string Type { get; set; } = string.Empty;
+
+        [Required]
+        public string Content { get; set; } = string.Empty;
+
+        [StringLength(100)]
         public string? TargetId { get; set; }
-        public TargetType? TargetType { get; set; }
+
+        public NotificationTargetType? TargetType { get; set; }
+
         public bool IsRead { get; set; } = false;
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public bool IsDeleted { get; set; } = false;
-        public DateTime? DeletedAt { get; set; }
+
+        // Navigation properties
+        [ForeignKey("UserId")]
+        public virtual User User { get; set; } = null!;
+    }
+
+    public enum NotificationTargetType
+    {
+        Article,
+        Audio,
+        Podcast,
+        Product,
+        Order
     }
 }

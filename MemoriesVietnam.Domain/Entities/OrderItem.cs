@@ -1,19 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MemoriesVietnam.Domain.Entities
+namespace MemoriesVietnam.Models.Entities
 {
     public class OrderItem
     {
+        [Key]
+        [StringLength(100)]
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string OrderId { get; set; }
-        public Order Order { get; set; }
-        public string? ProductId { get; set; }
-        public Product? Product { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string OrderId { get; set; } = string.Empty;
+
+        [Required]
+        [StringLength(100)]
+        public string ProductId { get; set; } = string.Empty;
+
         public int Qty { get; set; }
+
+        [Column(TypeName = "decimal(10,2)")]
         public decimal Price { get; set; }
+
+        // Navigation properties
+        [ForeignKey("OrderId")]
+        public virtual Order Order { get; set; } = null!;
+
+        [ForeignKey("ProductId")]
+        public virtual Product Product { get; set; } = null!;
     }
 }

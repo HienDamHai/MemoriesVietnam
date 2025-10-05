@@ -1,24 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MemoriesVietnam.Domain.Common;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MemoriesVietnam.Domain.Entities
+namespace MemoriesVietnam.Models.Entities
 {
-    public class PodcastEpisode : ISoftDeletable
+    public class PodcastEpisode
     {
+        [Key]
+        [StringLength(100)]
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string PodcastId { get; set; }
-        public Podcast Podcast { get; set; }
-        public string Title { get; set; } = "";
-        public string AudioUrl { get; set; } = "";
-        public int Duration { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string PodcastId { get; set; } = string.Empty;
+
+        [Required]
+        [StringLength(255)]
+        public string Title { get; set; } = string.Empty;
+
+        public string? AudioUrl { get; set; }
+
+        public int Duration { get; set; } // in seconds
+
+        [StringLength(100)]
         public string? ArticleId { get; set; }
-        public Article? Article { get; set; }
+
         public int EpisodeNumber { get; set; }
-        public bool IsDeleted { get; set; } = false;
-        public DateTime? DeletedAt { get; set; }
+
+        // Navigation properties
+        [ForeignKey("PodcastId")]
+        public virtual Podcast Podcast { get; set; } = null!;
+
+        [ForeignKey("ArticleId")]
+        public virtual Article? Article { get; set; }
     }
 }

@@ -1,22 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MemoriesVietnam.Domain.Common;
-using MemoriesVietnam.Domain.Enum;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MemoriesVietnam.Domain.Entities
+namespace MemoriesVietnam.Models.Entities
 {
-    public class LikeTable : ISoftDeletable
+    public class LikeTable
     {
+        [Key]
+        [StringLength(100)]
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string UserId { get; set; }
-        public User User { get; set; }
-        public string TargetId { get; set; }
-        public TargetType TargetType { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string UserId { get; set; } = string.Empty;
+
+        [Required]
+        [StringLength(100)]
+        public string TargetId { get; set; } = string.Empty;
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public bool IsDeleted { get; set; } = false;
-        public DateTime? DeletedAt { get; set; }
+
+        public TargetType TargetType { get; set; }
+
+        // Navigation properties
+        [ForeignKey("UserId")]
+        public virtual User User { get; set; } = null!;
+    }
+
+    public enum TargetType
+    {
+        Article,
+        Audio,
+        Podcast,
+        Product
     }
 }

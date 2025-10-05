@@ -1,20 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MemoriesVietnam.Domain.Enum;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MemoriesVietnam.Domain.Entities
+namespace MemoriesVietnam.Models.Entities
 {
     public class HistoryLog
     {
+        [Key]
+        [StringLength(100)]
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        public TargetType TargetType { get; set; }
-        public string? UserId { get; set; }
-        public User? User { get; set; }
-        public string TargetId { get; set; }
-        public float Progress { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string UserId { get; set; } = string.Empty;
+
+        [Required]
+        [StringLength(100)]
+        public string TargetId { get; set; } = string.Empty;
+
+        public HistoryTargetType TargetType { get; set; }
+
+        public float Progress { get; set; } // 0.0 to 1.0
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        // Navigation properties
+        [ForeignKey("UserId")]
+        public virtual User User { get; set; } = null!;
+    }
+
+    public enum HistoryTargetType
+    {
+        Article,
+        Audio,
+        Podcast
     }
 }

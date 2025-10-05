@@ -1,20 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MemoriesVietnam.Domain.Common;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MemoriesVietnam.Domain.Entities
+namespace MemoriesVietnam.Models.Entities
 {
-    public class ArticleTag : ISoftDeletable
+    public class ArticleTag
     {
+        [Key]
+        [StringLength(100)]
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string ArticleId { get; set; }
-        public Article Article { get; set; }
-        public string TagId { get; set; }
-        public Tag Tag { get; set; }
-        public bool IsDeleted { get; set; } = false;
-        public DateTime? DeletedAt { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string ArticleId { get; set; } = string.Empty;
+
+        [Required]
+        [StringLength(100)]
+        public string TagId { get; set; } = string.Empty;
+
+        // Navigation properties
+        [ForeignKey("ArticleId")]
+        public virtual Article Article { get; set; } = null!;
+
+        [ForeignKey("TagId")]
+        public virtual Tag Tag { get; set; } = null!;
     }
 }

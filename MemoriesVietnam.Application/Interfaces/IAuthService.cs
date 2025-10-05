@@ -1,17 +1,14 @@
-﻿using MemoriesVietnam.Application.DTOs.Auth;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static MemoriesVietnam.Application.DTOs.OAuthAccountDto;
+using MemoriesVietnam.Models.DTOs;
 
-namespace MemoriesVietnam.Application.Interfaces
+namespace MemoriesVietnam.Services.Interfaces
 {
     public interface IAuthService
     {
-        Task<AuthResponse> RegisterAsync(RegisterRequest request);
-        Task<AuthResponse> LoginAsync(LoginRequest request);
-        Task<AuthResponse> OAuthLoginAsync(OAuthLoginRequest request);
+        Task<AuthResponseDto> RegisterAsync(RegisterRequestDto request);
+        Task<AuthResponseDto> LoginAsync(LoginRequestDto request);
+        Task<UserDto?> GetCurrentUserAsync(string userId);
+        string GenerateJwtToken(string userId, string email, string role);
+        string HashPassword(string password);
+        bool VerifyPassword(string password, string hash);
     }
 }

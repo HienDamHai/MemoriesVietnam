@@ -1,22 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MemoriesVietnam.Domain.Common;
+using System.ComponentModel.DataAnnotations;
 
-namespace MemoriesVietnam.Domain.Entities
+namespace MemoriesVietnam.Models.Entities
 {
-    public class Podcast : ISoftDeletable
+    public class Podcast
     {
+        [Key]
+        [StringLength(100)]
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string Title { get; set; } = "";
-        public string Description { get; set; } = "";
-        public string CoverUrl { get; set; } = "";
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public bool IsDeleted { get; set; } = false;
-        public DateTime? DeletedAt { get; set; }
 
-        public ICollection<PodcastEpisode>? Episodes { get; set; }
+        [Required]
+        [StringLength(255)]
+        public string Title { get; set; } = string.Empty;
+
+        public string? Description { get; set; }
+
+        public string? CoverUrl { get; set; }
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        // Navigation properties
+        public virtual ICollection<PodcastEpisode> Episodes { get; set; } = new List<PodcastEpisode>();
     }
 }

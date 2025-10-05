@@ -1,22 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MemoriesVietnam.Domain.Common;
+using System.ComponentModel.DataAnnotations;
 
-namespace MemoriesVietnam.Domain.Entities
+namespace MemoriesVietnam.Models.Entities
 {
-    public class Era : ISoftDeletable
+    public class Era
     {
+        [Key]
+        [StringLength(100)]
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string Name { get; set; } = "";
-        public int YearStart { get; set; }
-        public int YearEnd { get; set; }
-        public string Description { get; set; } = "";
 
-        public ICollection<Article>? Articles { get; set; }
-        public bool IsDeleted { get; set; } = false;
-        public DateTime? DeletedAt { get; set; }
+        [Required]
+        [StringLength(255)]
+        public string Name { get; set; } = string.Empty;
+
+        public int YearStart { get; set; }
+
+        public int YearEnd { get; set; }
+
+        public string? Description { get; set; }
+
+        // Navigation properties
+        public virtual ICollection<Article> Articles { get; set; } = new List<Article>();
     }
 }

@@ -1,24 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MemoriesVietnam.Domain.Common;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MemoriesVietnam.Domain.Entities
+namespace MemoriesVietnam.Models.Entities
 {
-    public class ArticleAudio : ISoftDeletable
+    public class ArticleAudio
     {
+        [Key]
+        [StringLength(100)]
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string ArticleId { get; set; }
-        public Article Article { get; set; }
-        public string VoiceId { get; set; } = "";
-        public string Url { get; set; } = "";
-        public int Duration { get; set; }
 
-        public string CreatedBy { get; set; }
-        public User CreatedByUser { get; set; }
-        public bool IsDeleted { get; set; } = false;
-        public DateTime? DeletedAt { get; set; }
+        [Required]
+        [StringLength(100)]
+        public string ArticleId { get; set; } = string.Empty;
+
+        [Required]
+        [StringLength(100)]
+        public string VoiceId { get; set; } = string.Empty;
+
+        public string? Url { get; set; }
+
+        public int Duration { get; set; } // in seconds
+
+        [Required]
+        [StringLength(100)]
+        public string CreatedBy { get; set; } = string.Empty;
+
+        // Navigation properties
+        [ForeignKey("ArticleId")]
+        public virtual Article Article { get; set; } = null!;
+
+        [ForeignKey("CreatedBy")]
+        public virtual User CreatedByUser { get; set; } = null!;
     }
 }

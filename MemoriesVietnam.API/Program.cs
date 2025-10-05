@@ -1,158 +1,151 @@
-using MemoriesVietnam.Application.Interfaces;
-using MemoriesVietnam.Application.Services;
-using MemoriesVietnam.Domain.IBasic;
-using MemoriesVietnam.Domain.IRepositories;
-using MemoriesVietnam.Infrastructure.Basic;
-using MemoriesVietnam.Infrastructure.Data;
-using MemoriesVietnam.Infrastructure.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+ï»¿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MemoriesVietnam.Configuration;
+using MemoriesVietnam.Repositories;
+using MemoriesVietnam.Repositories.Interfaces;
+using MemoriesVietnam.Services;
+using MemoriesVietnam.Services.Interfaces;
 using System.Text;
+using MemoriesVietnam.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddControllers();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// Configure Entity Framework
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        new MySqlServerVersion(new Version(8, 0, 21)),
+        b => b.MigrationsAssembly("MemoriesVietnam.Infrastructure")
+    ));
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
+// Configure JWT
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+builder.Services.Configure<JwtSettings>(jwtSettings);
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+var jwtSettingsValue = jwtSettings.Get<JwtSettings>();
+var key = Encoding.ASCII.GetBytes(jwtSettingsValue?.SecretKey ?? "");
+
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(x =>
+{
+    x.RequireHttpsMetadata = false;
+    x.SaveToken = true;
+    x.TokenValidationParameters = new TokenValidationParameters
     {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-        };
-    });
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = true,
+        ValidIssuer = jwtSettingsValue?.Issuer,
+        ValidateAudience = true,
+        ValidAudience = jwtSettingsValue?.Audience,
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero
+    };
+});
 
+// Configure Cloudinary
+builder.Services.Configure<CloudinarySettings>(
+    builder.Configuration.GetSection("CloudinarySettings"));
+
+// Configure CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000")
+        policy.WithOrigins("http://localhost:3000", "https://localhost:3000")
               .AllowAnyHeader()
-              .AllowAnyMethod();
+              .AllowAnyMethod()
+              .AllowCredentials();
     });
 });
 
-
+// Register repositories and services
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped<IAuthRepository, AuthRepository>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
-builder.Services.AddScoped<INotificationService, NotificationService>();
-builder.Services.AddScoped<IOAuthAccountRepository, OAuthAccountRepository>();
-builder.Services.AddScoped<ProductService>();
-builder.Services.AddScoped<TagService>();
-builder.Services.AddScoped<OrderService>();
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddScoped<IPodcastRepository, PodcastRepository>();
-builder.Services.AddScoped<PodcastService>();
-builder.Services.AddScoped<PodcastEpisodeService>();
-builder.Services.AddScoped<IBookmarksRepository, BookmarkRepository>();
-builder.Services.AddScoped<BookmarkService>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<CategoryService>();
-builder.Services.AddScoped<IEraRepository, EraRepository>();
-builder.Services.AddScoped<EraService>();
-builder.Services.AddScoped<IArticleAudioRepository, ArticleAudioRepository>();
-builder.Services.AddScoped<ArticleAudioService>();
-builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
-builder.Services.AddScoped<ArticleService>();
-builder.Services.AddScoped<IArticleTagRepository, ArticleTagRepository>();
-builder.Services.AddScoped<ArticleTagService>();
-builder.Services.AddScoped<ICommentRepository, CommentRepository>();
-builder.Services.AddScoped<CommentService>();
-builder.Services.AddScoped<IHistoryLogRepository, HistoryLogRepository>();
-builder.Services.AddScoped<HistoryLogService>();
-builder.Services.AddScoped<ILikeTableRepository, LikeTableRepository>();
-builder.Services.AddScoped<LikeTableService>();
 
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
+// Register all services
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IArticleService, ArticleService>();
+builder.Services.AddScoped<IEraService, EraService>();
+builder.Services.AddScoped<IUploadService, UploadService>();
+builder.Services.AddScoped<IPodcastService, PodcastService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
     {
-        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-        options.JsonSerializerOptions.WriteIndented = true;
+        Title = "Memoirs Vietnam API",
+        Version = "v1",
+        Description = "API cho há»‡ thá»‘ng Memoirs Vietnam"
     });
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddSwaggerGen(option =>
-{
-    // Hi?n th? param ki?u camelCase
-    option.DescribeAllParametersInCamelCase();
-
-    // N?u có duplicate API thì l?y cái ??u tiên
-    option.ResolveConflictingActions(conf => conf.First());
-
-    // C?u hình Security Definition cho JWT
-    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    // Configure JWT authentication in Swagger
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        In = ParameterLocation.Header,
-        Description = "Bearer {your token}",
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
         Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
 
-    // B?t Swagger yêu c?u token cho t?t c? API (tr? khi [AllowAnonymous])
-    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
     {
         {
             new OpenApiSecurityScheme
             {
                 Reference = new OpenApiReference
                 {
-                    Type=ReferenceType.SecurityScheme,
-                    Id="Bearer"
-                }
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header,
             },
-            Array.Empty<string>()
+            new List<string>()
         }
     });
 });
 
-
 var app = builder.Build();
-
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-    DbSeeder.SeedAdmin(context, config);
-}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Memoirs Vietnam API V1");
+    });
 }
 
-app.UseCors("AllowFrontend");
-
 app.UseHttpsRedirection();
+
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Create database if it doesn't exist
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    context.Database.EnsureCreated();
+}
 
 app.Run();
