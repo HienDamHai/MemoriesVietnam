@@ -28,7 +28,7 @@ namespace MemoriesVietnam.Application.Services
 
         public async Task<Podcast?> GetByIdAsync(string id)
         {
-            return await _unitOfWork.Repository<Podcast>().GetByIdAsync(id);
+            return await _podcastRepository.GetByIdWithEpisodesAsync(id);
         }
 
         public async Task<Podcast> CreateAsync(Podcast podcast)

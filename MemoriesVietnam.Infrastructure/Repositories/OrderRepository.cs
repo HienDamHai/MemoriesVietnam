@@ -1,4 +1,5 @@
 ﻿using MemoriesVietnam.Domain.Entities;
+using MemoriesVietnam.Domain.Enum;
 using MemoriesVietnam.Domain.IRepositories;
 using MemoriesVietnam.Infrastructure.Basic;
 using MemoriesVietnam.Infrastructure.Data;
@@ -20,6 +21,13 @@ namespace MemoriesVietnam.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<Order> GetByIdAsync(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id)) { throw new ArgumentNullException(nameof(id));}
+            return await _context.Orders.Include(o => o.OrderItems).ThenInclude(o => o.Product).OrderByDescending(o => o.CreatedAt)
+                .FirstOrDefaultAsync(o => o.Id == id);
+        }
+
         public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(string userId)
         {
             if (string.IsNullOrEmpty(userId))
@@ -31,5 +39,19 @@ namespace MemoriesVietnam.Infrastructure.Repositories
                 .OrderByDescending(o => o.CreatedAt)
                 .ToListAsync();
         }
+
+        public async Task UpdateOrderStatus(string orderId, string status)
+        {
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
+            if (order != null)
+            {
+                if (Enum.TryParse(typeof(OrderStatus), status, true, out var result))
+                {
+                    order.Status = (OrderStatus)result;
+                    await _context.SaveChangesAsync();
+                }
+            }
+        }
+
     }
 }

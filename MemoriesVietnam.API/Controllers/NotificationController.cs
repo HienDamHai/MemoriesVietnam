@@ -8,7 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace MemoriesVietnam.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class NotificationController : ControllerBase

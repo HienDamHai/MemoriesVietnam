@@ -27,7 +27,7 @@ namespace MemoriesVietnam.Application.Services
 
         public async Task<Order?> GetByIdAsync(string id)
         {
-            return await _unitOfWork.Repository<Order>().GetByIdAsync(id);
+            return await _orderRepository.GetByIdAsync(id);
         }
 
         public async Task<Order> CreateAsync(Order order)
@@ -61,7 +61,7 @@ namespace MemoriesVietnam.Application.Services
 
         public async Task<Order?> UpdateAsync(string id, OrderStatus status)
         {
-            var order = await _unitOfWork.Repository<Order>().GetByIdAsync(id);
+            var order = await _orderRepository.GetByIdAsync(id);
             if (order == null) return null;
 
             order.Status = status;
@@ -74,7 +74,7 @@ namespace MemoriesVietnam.Application.Services
 
         public async Task<bool> DeleteAsync(string id)
         {
-            var order = await _unitOfWork.Repository<Order>().GetByIdAsync(id);
+            var order = await _orderRepository.GetByIdAsync(id);
             if (order == null) return false;
             _unitOfWork.Repository<Order>().Remove(order);
             await _unitOfWork.SaveChangesAsync();

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MemoriesVietnam.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase

@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace MemoriesVietnam.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase

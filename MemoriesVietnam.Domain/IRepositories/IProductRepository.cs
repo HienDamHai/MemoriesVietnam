@@ -8,10 +8,9 @@ using System.Threading.Tasks;
 
 namespace MemoriesVietnam.Domain.IRepositories
 {
-    public interface IOrderRepository : IGenericRepository<Order>
+    public interface IProductRepository : IGenericRepository<Product>
     {
-        Task<IEnumerable<Order>> GetOrdersByUserIdAsync(string userId);
-        Task<Order> GetByIdAsync(string id);
-        Task UpdateOrderStatus(string orderId, string status);
+        Task<IEnumerable<Product>> GetAllAsync();
+        Task<Product> GetByIdAsync(string id);
     }
 }

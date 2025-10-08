@@ -57,6 +57,7 @@ builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IOAuthAccountRepository, OAuthAccountRepository>();
 builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<TagService>();
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
@@ -81,6 +82,7 @@ builder.Services.AddScoped<IHistoryLogRepository, HistoryLogRepository>();
 builder.Services.AddScoped<HistoryLogService>();
 builder.Services.AddScoped<ILikeTableRepository, LikeTableRepository>();
 builder.Services.AddScoped<LikeTableService>();
+builder.Services.AddScoped<PaymentService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

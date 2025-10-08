@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MemoriesVietnam.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class EraController : ControllerBase

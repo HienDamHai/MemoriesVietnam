@@ -1,5 +1,6 @@
 ﻿using MemoriesVietnam.Domain.Entities;
 using MemoriesVietnam.Domain.IBasic;
+using MemoriesVietnam.Domain.IRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,28 +12,30 @@ namespace MemoriesVietnam.Application.Services
     public class ProductService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public ProductService(IUnitOfWork unitOfWork)
+        private readonly IProductRepository _repo;
+        public ProductService(IUnitOfWork unitOfWork, IProductRepository productRepository)
         {
             _unitOfWork = unitOfWork;
+            _repo = productRepository;
         }
 
         public async Task<IEnumerable<Product>> GetAllAsync()
         {
-            var list = await _unitOfWork.Repository<Product>().GetAllAsync();
+            var list = await _repo.GetAllAsync();
             list = list.Where(p => !p.IsDeleted);
             return list;
         }
 
         public async Task<Product?> GetByIdAsync(string id)
         {
-            var item = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
+            var item = await _repo.GetByIdAsync(id);
             if(item == null || item.IsDeleted) return null;
             return item;
         }
 
         public async Task<Product?> UpdateAsync(Product product)
         {
-            var existing = await _unitOfWork.Repository<Product>().GetByIdAsync(product.Id);
+            var existing = await _repo.GetByIdAsync(product.Id);
             if(existing == null) return null;
 
             existing.Name = product.Name;
@@ -43,23 +46,23 @@ namespace MemoriesVietnam.Application.Services
             existing.Images = product.Images;
             existing.CategoryId = product.CategoryId;
 
-            _unitOfWork.Repository<Product>().Update(existing);
+            _repo.Update(existing);
             await _unitOfWork.SaveChangesAsync();
             return existing;
         }
 
         public async Task<Product> CreateAsync(Product product)
         {
-            await _unitOfWork.Repository<Product>().AddAsync(product);
+            await _repo.AddAsync(product);
             await _unitOfWork.SaveChangesAsync();
             return product;
         }
 
         public async Task<bool> DeleteAsync(string id)
         {
-            var existing = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
+            var existing = await _repo.GetByIdAsync(id);
             if (existing == null) return false;
-            _unitOfWork.Repository<Product>().Remove(existing);
+            _repo.Remove(existing);
             await _unitOfWork.SaveChangesAsync();
             return true;
         }

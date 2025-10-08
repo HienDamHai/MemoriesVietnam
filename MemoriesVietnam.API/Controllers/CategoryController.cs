@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MemoriesVietnam.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase
@@ -36,10 +36,11 @@ namespace MemoriesVietnam.API.Controllers
         public async Task<IActionResult> GetActive()
         {
             var categories = await _categoryService.GetActiveAsync();
-            var dtos = categories.Select(c => new CategoryDto
+            var dtos = categories.Select(c => new Category
             {
                 Id = c.Id,
-                Name = c.Name
+                Name = c.Name,
+                Products = c.Products
             });
             return Ok(dtos);
         }

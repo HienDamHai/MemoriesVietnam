@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MemoriesVietnam.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PodcastEpisodeController : ControllerBase
