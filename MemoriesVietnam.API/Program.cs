@@ -1,4 +1,4 @@
-using MemoriesVietnam.Application.Interfaces;
+ï»¿using MemoriesVietnam.Application.Interfaces;
 using MemoriesVietnam.Application.Services;
 using MemoriesVietnam.Domain.IBasic;
 using MemoriesVietnam.Domain.IRepositories;
@@ -40,11 +40,18 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        policy
+            .WithOrigins(
+                "http://localhost:3000", // local dev
+                "https://memories-vietnam-fe.vercel.app", // vercel production
+                "https://www.memories-vietnam-fe.vercel.app" // optional www subdomain
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials(); // náº¿u báº¡n cÃ³ login/token
     });
 });
+
 
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -100,10 +107,10 @@ builder.Services.AddSwaggerGen(option =>
     // Hi?n th? param ki?u camelCase
     option.DescribeAllParametersInCamelCase();
 
-    // N?u có duplicate API thì l?y cái ??u tiên
+    // N?u cÃ³ duplicate API thÃ¬ l?y cÃ¡i ??u tiÃªn
     option.ResolveConflictingActions(conf => conf.First());
 
-    // C?u hình Security Definition cho JWT
+    // C?u hÃ¬nh Security Definition cho JWT
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -114,7 +121,7 @@ builder.Services.AddSwaggerGen(option =>
         Scheme = "Bearer"
     });
 
-    // B?t Swagger yêu c?u token cho t?t c? API (tr? khi [AllowAnonymous])
+    // B?t Swagger yÃªu c?u token cho t?t c? API (tr? khi [AllowAnonymous])
     option.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
