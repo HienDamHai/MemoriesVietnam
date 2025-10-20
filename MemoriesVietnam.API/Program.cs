@@ -155,20 +155,27 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwaggerUI();
 }
 
+app.UseHttpsRedirection();
+
+// 1️⃣ CORS luôn đứng đầu, trước Auth
+app.UseCors("AllowFrontend");
+
+// 2️⃣ Bypass OPTIONS trước Auth
 app.Use(async (context, next) =>
 {
     if (context.Request.Method == "OPTIONS")
     {
         context.Response.StatusCode = 200;
+        // Gửi header CORS
+        context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+        context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
         await context.Response.CompleteAsync();
         return;
     }
     await next();
 });
 
-
-app.UseHttpsRedirection();
-app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 
