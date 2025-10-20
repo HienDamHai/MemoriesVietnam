@@ -46,8 +46,8 @@ builder.Services.AddCors(options =>
                 "https://memories-vietnam-fe.vercel.app", // vercel production
                 "https://www.memories-vietnam-fe.vercel.app" // optional www subdomain
             )
-            .AllowAnyHeader()
             .AllowAnyMethod()
+            .AllowAnyHeader()
             .AllowCredentials(); // nếu bạn có login/token
     });
 });
@@ -155,10 +155,20 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AllowFrontend");
+app.Use(async (context, next) =>
+{
+    if (context.Request.Method == "OPTIONS")
+    {
+        context.Response.StatusCode = 200;
+        await context.Response.CompleteAsync();
+        return;
+    }
+    await next();
+});
+
 
 app.UseHttpsRedirection();
-
+app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -52,7 +52,6 @@ namespace MemoriesVietnam.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Editor")]
         public async Task<IActionResult> Create([FromBody] NotifDto.NotificationCreateRequest notification)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
