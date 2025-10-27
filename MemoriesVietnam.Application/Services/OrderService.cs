@@ -22,7 +22,7 @@ namespace MemoriesVietnam.Application.Services
 
         public async Task<IEnumerable<Order>> GetAllAsync()
         {
-            return await _unitOfWork.Repository<Order>().GetAllAsync();
+            return await _orderRepository.GetAllAsync();
         }
 
         public async Task<Order?> GetByIdAsync(string id)

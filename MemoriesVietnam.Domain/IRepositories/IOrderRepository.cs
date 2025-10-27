@@ -10,6 +10,7 @@ namespace MemoriesVietnam.Domain.IRepositories
 {
     public interface IOrderRepository : IGenericRepository<Order>
     {
+        Task<List<Order>> GetAllAsync();
         Task<IEnumerable<Order>> GetOrdersByUserIdAsync(string userId);
         Task<Order> GetByIdAsync(string id);
         Task UpdateOrderStatus(string orderId, string status);

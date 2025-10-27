@@ -21,6 +21,11 @@ namespace MemoriesVietnam.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<List<Order>> GetAllAsync()
+        {
+            return await _context.Orders.Include(o => o.OrderItems).ThenInclude(o => o.Product).OrderByDescending(o => o.CreatedAt).ToListAsync();
+        }
+
         public async Task<Order> GetByIdAsync(string id)
         {
             if (string.IsNullOrWhiteSpace(id)) { throw new ArgumentNullException(nameof(id));}
