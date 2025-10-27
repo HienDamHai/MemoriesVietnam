@@ -59,8 +59,7 @@ namespace MemoriesVietnam.Application.Services
     { "vnp_OrderInfo", $"Thanh toan don hang {order.Id}" },
     { "vnp_OrderType", "other" },
     { "vnp_ReturnUrl", vnp_ReturnUrl },
-    { "vnp_TxnRef", order.Id.ToString() },
-    { "vnp_SecureHashType", "SHA512" } // ✅ thêm dòng này
+    { "vnp_TxnRef", order.Id.ToString() }
 };
 
 
@@ -81,8 +80,7 @@ namespace MemoriesVietnam.Application.Services
                 .OrderBy(kv => kv.Key, StringComparer.Ordinal)
                 .Select(kv => $"{Uri.EscapeDataString(kv.Key)}={Uri.EscapeDataString(kv.Value)}"));
 
-            string paymentUrl = $"{vnp_Url}?{queryString}&vnp_SecureHash={vnp_SecureHash}";
-            Console.WriteLine($"[PAYMENT] ✅ Payment URL tạo thành công:\n{paymentUrl}");
+            string paymentUrl = $"{vnp_Url}?{queryString}&vnp_SecureHashType=SHA512&vnp_SecureHash={vnp_SecureHash}";
 
             return paymentUrl;
         }
