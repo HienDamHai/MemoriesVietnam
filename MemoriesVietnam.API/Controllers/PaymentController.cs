@@ -15,22 +15,22 @@ namespace MemoriesVietnam.API.Controllers
             _paymentService = paymentService;
         }
 
-        // 🔹 Tạo link thanh toán
+        // Tạo link thanh toán VNPAY
         [HttpPost("create")]
         public async Task<IActionResult> CreatePaymentUrl([FromQuery] string orderId)
         {
             var url = await _paymentService.CreatePaymentUrl(orderId, HttpContext);
-            if (url == null) return NotFound("Không tìm thấy đơn hàng");
+            if (url == null) return NotFound(new { Message = "Không tìm thấy đơn hàng" });
             return Ok(new { paymentUrl = url });
         }
 
-
-        // 🔹 Callback từ VNPAY (sau khi thanh toán)
+        // Callback VNPAY sau khi user thanh toán xong
         [HttpGet("vnpay-return")]
         public async Task<IActionResult> PaymentReturn()
         {
-            var response = await _paymentService.HandleVnpayReturn(Request.Query);
-            return Ok(response);
+            var result = await _paymentService.HandleVnpayReturn(Request.Query);
+            // Trả về JSON cho FE
+            return Ok(result);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using MemoriesVietnam.Domain.IRepositories;
+﻿// PaymentService.cs
+using MemoriesVietnam.Domain.IRepositories;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -13,9 +14,8 @@ namespace MemoriesVietnam.Application.Services
     {
         private readonly IOrderRepository _orderRepo;
 
-        // 🔹 Cấu hình trực tiếp, dùng IPN server cho vnp_ReturnUrl
         private const string vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        private const string vnp_ReturnUrl = "https://memoirsvietnam-faa3hydzbwhbdnhe.southeastasia-01.azurewebsites.net/api/Payment/vnpay-return";
+        private const string vnp_ReturnUrl = "https://memories-vietnam-fe.vercel.app/payment-success"; // frontend
         private const string vnp_TmnCode = "8D3KC89F";
         private const string vnp_HashSecret = "U4ENMXYM8TM3M47QW7P3DI0UKKH9QRJ0";
 
@@ -24,19 +24,18 @@ namespace MemoriesVietnam.Application.Services
             _orderRepo = orderRepo;
         }
 
-        // 🔹 Tạo link thanh toán VNPAY
+        // Tạo link thanh toán
         public async Task<string?> CreatePaymentUrl(string orderId, HttpContext context)
         {
             var order = await _orderRepo.GetByIdAsync(orderId);
-            if (order == null)
-                return null;
+            if (order == null) return null;
 
             var vnp_Params = new SortedDictionary<string, string>(StringComparer.Ordinal)
             {
                 { "vnp_Version", "2.1.0" },
                 { "vnp_Command", "pay" },
                 { "vnp_TmnCode", vnp_TmnCode },
-                { "vnp_Amount", ((long)Math.Round(order.Total * 100)).ToString() }, // VND * 100
+                { "vnp_Amount", ((long)Math.Round(order.Total * 100)).ToString() },
                 { "vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss") },
                 { "vnp_CurrCode", "VND" },
                 { "vnp_IpAddr", GetClientIpAddress(context) },
@@ -47,19 +46,17 @@ namespace MemoriesVietnam.Application.Services
                 { "vnp_TxnRef", order.Id }
             };
 
-            // 🔹 Tạo chữ ký
             string rawData = string.Join("&", vnp_Params.OrderBy(kv => kv.Key)
                 .Select(kv => $"{kv.Key}={kv.Value}"));
             string vnp_SecureHash = HmacSHA512(vnp_HashSecret, rawData);
 
-            // 🔹 Tạo query string encode
             string queryString = string.Join("&", vnp_Params.OrderBy(kv => kv.Key)
                 .Select(kv => $"{Uri.EscapeDataString(kv.Key)}={Uri.EscapeDataString(kv.Value)}"));
 
             return $"{vnp_Url}?{queryString}&vnp_SecureHashType=SHA512&vnp_SecureHash={vnp_SecureHash}";
         }
 
-        // 🔹 Xử lý IPN / callback từ VNPAY
+        // IPN / callback từ VNPAY
         public async Task<object> HandleVnpayReturn(IQueryCollection query)
         {
             var vnpData = query
@@ -69,7 +66,6 @@ namespace MemoriesVietnam.Application.Services
             if (!vnpData.TryGetValue("vnp_SecureHash", out string vnp_SecureHash))
                 return new { Success = false, Message = "Thiếu chữ ký xác thực." };
 
-            // 🔹 Xoá key không dùng để kiểm tra hash
             vnpData.Remove("vnp_SecureHash");
             vnpData.Remove("vnp_SecureHashType");
 
